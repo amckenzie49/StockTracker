@@ -1,0 +1,20 @@
+﻿@model IndexViewModel
+@{
+    ViewBag.Title = "Track a Stock";
+}
+
+
+<div class="container">
+    <form method="post" asp-antiforgery="true">
+        <div>
+            <label asp-for="TickerSymbol"></label>
+            <input asp-for="TickerSymbol" />
+            <input type="submit" />
+
+        </div>
+        <div>
+            
+        </div>
+    </form>
+</div>
+

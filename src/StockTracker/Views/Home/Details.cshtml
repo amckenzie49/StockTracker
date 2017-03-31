@@ -1,0 +1,69 @@
+﻿@model StockTracker.Entities.Stock
+@using StockTracker.Entities
+@{
+    ViewBag.Title = Model.TickerSymbol + " Details";
+    //latest year of data from the model
+    int startYear = @Model.AnnualClosingValues.First().CloseDate.Year;
+}
+
+@functions{
+    //simple method to calculate yearly return percentages given data from the model
+    public string CalcYearlyReturnPercent(decimal endingValue, decimal startingValue, int years)
+    {
+        decimal result = (((endingValue - startingValue) / endingValue) / (decimal)years);
+        
+        return String.Format("{0:P}", result);
+    }
+}
+
+<div class="container">
+    <h2>@Model.TickerSymbol</h2>
+    <h4>@Model.Name</h4>
+</div>
+
+<div class="container">
+    Ask: @Model.Ask
+</div>
+
+<div class="container">
+    Graphing placeholder
+</div>
+
+<div class="container">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Annualized Returns calculated to @startYear</th>
+                <th>1 year</th>
+                <th>5 years</th>
+                <th>10 years</th>
+                <th>20 years</th>
+            </tr>
+        </thead>
+        <tr>
+            <td></td>
+            <td>@CalcYearlyReturnPercent(@Model.AnnualClosingValues.First().AdjustedClose, @Model.AnnualClosingValues.Find(x => x.CloseDate.Year == (startYear - 1)).AdjustedClose, 1)</td>
+            <td>@CalcYearlyReturnPercent(@Model.AnnualClosingValues.First().AdjustedClose, @Model.AnnualClosingValues.Find(x => x.CloseDate.Year == (startYear - 5)).AdjustedClose, 5)</td>
+            <td>@CalcYearlyReturnPercent(@Model.AnnualClosingValues.First().AdjustedClose, @Model.AnnualClosingValues.Find(x => x.CloseDate.Year == (startYear - 10)).AdjustedClose, 10)</td>
+            <td>@CalcYearlyReturnPercent(@Model.AnnualClosingValues.First().AdjustedClose, @Model.AnnualClosingValues.Find(x => x.CloseDate.Year == (startYear - 20)).AdjustedClose, 20)</td>
+        </tr>
+    </table>
+</div>
+
+<div class="container">
+    <button data-toggle="collapse" data-target="#alldata" class="btn btn-info">Show Data</button>
+</div>
+<div id="alldata" class="collapse container">
+
+    <table class="table">
+        @foreach (var closingvalue in @Model.AnnualClosingValues)
+        {
+            <tr>
+                <td>Date: @closingvalue.CloseDate</td>
+                <td>Value: @closingvalue.CloseValue</td>
+                <td>Adjusted: @closingvalue.AdjustedClose</td>
+            </tr>
+        }
+    </table>
+
+</div>
